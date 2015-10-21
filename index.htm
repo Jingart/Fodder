@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta charset="UTF-8">
+    <title>Fodder</title>
+	
+    <script id="sap-ui-bootstrap"
+			src="https://openui5.hana.ondemand.com/resources/sap-ui-core.js"
+			data-sap-ui-theme="sap_bluecrystal"
+			data-sap-ui-libs="sap.ui.commons, sap.ui.table, sap.m"
+			data-sap-ui-compatVersion="edge"
+			data-sap-ui-bindingSyntax="complex"></script>
+	<script type="text/javascript" src="app/jsonmodel_extended.js"></script>
+	<script>
+		//src="https://openui5.hana.ondemand.com/resources/sap-ui-core.js"
+		
+        sap.ui.getCore().attachInit(function () {
+
+			sap.ui.localResources("app");
+			var app = new sap.m.App({id:"idApp",initialPage:"idMainView"}); 
+
+			var view1 = sap.ui.view({id:"idMainView", viewName:"app.jsview1", type:sap.ui.core.mvc.ViewType.JS});
+			var view2 = sap.ui.view({id:"idNewListView", viewName:"app.newlist", type:sap.ui.core.mvc.ViewType.JS});
+				
+			app.addPage(view1); 
+			app.addPage(view2);
+			app.placeAt("content");	
+			
+        });
+
+    </script>
+</head>
+<body class="sapUiBody" id="content">
+</body>
+</html>
