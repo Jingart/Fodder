@@ -18,7 +18,7 @@ sap.ui.define([
 			
 
 			//oNewlistModel.loadData("http://192.168.0.102/fodder/listdata", null, false);	
-			oNewlistModel.loadData("../fodder/listdata", null, false);	
+			oNewlistModel.loadData("../fodder/fodderdata", null, false);	
 			
 			var data = {shoppinglistitems: []};
 			oNewlistModel.setData(data, true);
@@ -51,7 +51,7 @@ sap.ui.define([
 				}
 				
 				var selectedKey = this.getSelectedKey();
-				var shopData = oNewlistModel.getProperty("/listdata/shops");
+				var shopData = oNewlistModel.getProperty("/fodderdata/shops");
 				var selectedShopId = shopData[selectedKey - 1].shopid;
 				//var shopLocationData = oNewlistModel.getProperty("/listdata/shoplocation");
 				
@@ -74,7 +74,7 @@ sap.ui.define([
 			});
 					
 			selectShop.setModel(oNewlistModel);
-			selectShop.bindAggregation("items", "/listdata/shops", itemSelectShopTemplate); 
+			selectShop.bindAggregation("items", "/fodderdata/shops", itemSelectShopTemplate); 
 
 			
 			var selectShopLocation = sap.ui.getCore().byId("IdSelectShopLocation");
@@ -124,7 +124,7 @@ sap.ui.define([
 			});
 					
 			selectShopLocation.setModel(oNewlistModel);
-			selectShopLocation.bindAggregation("items","/listdata/shoplocation",itemSelectShopLocationTemplate); 
+			selectShopLocation.bindAggregation("items","/fodderdata/shoplocation",itemSelectShopLocationTemplate); 
 			
 			
 		
@@ -175,7 +175,7 @@ sap.ui.define([
 			});
 					
 			brandSelect.setModel(oNewlistModel);
-			brandSelect.bindAggregation("items", "/listdata/itembrand", brandSelectTemplate); 
+			brandSelect.bindAggregation("items", "/fodderdata/itembrand", brandSelectTemplate); 
 			
 			var typeLabel = new sap.m.Label("IdLabelItemType", {
 				text: 'Type: ',
@@ -202,7 +202,7 @@ sap.ui.define([
 			});
 					
 			typeSelect.setModel(oNewlistModel);
-			typeSelect.bindAggregation("items", "/listdata/itemtype", selectTypeTemplate); 
+			typeSelect.bindAggregation("items", "/fodderdata/itemtype", selectTypeTemplate); 
 			
 			var priceLabel = new sap.m.Label("IdLabelItemPrice", {
 				text: 'Price: ',
@@ -246,7 +246,7 @@ sap.ui.define([
 			
 			brandSelect.attachChange(function() {
 				var selectedKey = this.getSelectedKey();
-				var brandData = oNewlistModel.getProperty("/listdata/itembrand");
+				var brandData = oNewlistModel.getProperty("/fodderdata/itembrand");
 				var selectedBrandId = brandData[selectedKey - 1].brandid;
 				
 				var filter = new sap.ui.model.Filter({

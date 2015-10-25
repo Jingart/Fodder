@@ -8,61 +8,42 @@ sap.ui.jsview("app.jsview1", {
  createContent : function(oController, oModel) {  
 	
 	var page = new sap.m.Page("IdMainPage", {
-		title : "Fodder main"
+		title : "Fodder"
 	});
 	
 	var bar = new sap.m.Bar({
-		contentLeft: [ new sap.m.Button('ButtonAddRow', {icon : "sap-icon://cart-full", 
-														 //width : "200%",
-													     press : [oController.onAddRowClick, oController] })]
-												 
-		/*contentMiddle: [ new sap.m.Button('ButtonLoad', {icon : "sap-icon://action", 
-														 press : oController.onLoadClick }),
-											   
-					     new sap.m.Button('ButtonSave', {icon : "sap-icon://save",
-														 press : oController.onSaveClick }),
-						 
-						 new sap.m.Button('ButtonDelete', {icon : "sap-icon://delete",
-														   press : oController.onDeleteClick })]*/
+		contentLeft: [ new sap.m.Button('ButtonAddRow', {icon : "sap-icon://cart-full",
+													     press : [oController.onAddRowClick, oController] })],
+														 
+		contentRight: [ new sap.m.Button('ButtonSettings', {icon : "sap-icon://settings",
+													        press : [oController.onSettingsClick, oController] })]
 	});
 			
 	page.addContent(bar);
 	
-	/*
-	var oTable = new sap.m.Table("contact_table", {
-        inset: true,
-        columns: [
-			new sap.m.Column({ header: new sap.m.Label({ text: "USER_ID" }) }),
-            new sap.m.Column({ header: new sap.m.Label({ text: "CONTACT" }) })
-        ]//,
-		//mode : sap.m.ListMode.SingleSelectMaster
-    });
 	
-	var template = new sap.m.ColumnListItem({
-		cells: [
-				new sap.m.Label({ text: "{USER_ID}" }),
-				new sap.m.Label({ text: "{CONTACT}" })
-		]
+	var shoppingList = new sap.m.List({
+		headerText:"Shopping lists"
 	});
 	
-	template.setType(sap.m.ListType.Active);
-	
-	template.attachPress(function(oEvent){
-		var c = this.getBindingContext();
-		var i = c.getObject();
-		sap.m.MessageToast.show("jhgf");
+	shoppingList.bindItems({
+		path : "/shoppinglistdisplay", 
+		sorter : new sap.ui.model.Sorter("date", true),
+		template : new sap.m.StandardListItem({
+			title: "{shop}",
+			description: "At: {date}"+ ", " + "Sum: {sum}",
+			type: sap.m.ListType.Navigation
+			/*press:function(evt){
+				var oBindingContext = evt.getSource().getBindingContext(); // evt.getSource() is the ListItem
+				page2.setBindingContext(oBindingContext); // make sure the detail page has the correct data context
+				app.to("page2");
+			}*/
+		})
 	});
 	
-	
-	oTable.bindAggregation("items", {
-        path: "/MyTestSet",
-        template: template
-    });
-	
-	page.addContent(oTable);
-	*/
-	return page;
+	page.addContent(shoppingList);
 
+	return page;
  }  
    
 });  
