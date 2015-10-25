@@ -16,8 +16,9 @@ sap.ui.define([
 				refreshAfterChange: false
 			});*/
 			
-			//oNewlistModel.loadData({sURL: "http://192.168.0.102/fodder/listdata", bAsync: false});	
-			oNewlistModel.loadData("http://192.168.0.102/fodder/listdata", null, false);	
+
+			//oNewlistModel.loadData("http://192.168.0.102/fodder/listdata", null, false);	
+			oNewlistModel.loadData("../fodder/listdata", null, false);	
 			
 			var data = {shoppinglistitems: []};
 			oNewlistModel.setData(data, true);
@@ -79,6 +80,7 @@ sap.ui.define([
 			var selectShopLocation = sap.ui.getCore().byId("IdSelectShopLocation");
 			selectShopLocation.setEnabled(false);
 			selectShopLocation.setAutoAdjustWidth(true);
+			selectShopLocation.setSelectedKey('');
 			
 			/*
 			selectShopLocation.addDelegate({
@@ -166,7 +168,7 @@ sap.ui.define([
 					span: "L7 M7 S7"
 				})
 			});
-			
+						
 			var brandSelectTemplate = new sap.ui.core.Item({  
 				key : "{brandid}",  
 				text : "{name}"  
@@ -216,7 +218,7 @@ sap.ui.define([
 				tooltip: 'Price',
 				width: '200px',
 				type: sap.m.InputType.Number,
-				//required: true,
+				required: true,
 				layoutData : new sap.ui.layout.GridData({
 					span: "L7 M7 S7"
 				})
@@ -236,10 +238,26 @@ sap.ui.define([
 				tooltip: 'Price pr.Kg',
 				width: '200px',
 				type: sap.m.InputType.Number,
-				//required: true,
+				required: true,
 				layoutData : new sap.ui.layout.GridData({
 					span: "L7 M7 S7"
 				})
+			});
+			
+			brandSelect.attachChange(function() {
+				var selectedKey = this.getSelectedKey();
+				var brandData = oNewlistModel.getProperty("/listdata/itembrand");
+				var selectedBrandId = brandData[selectedKey - 1].brandid;
+				
+				var filter = new sap.ui.model.Filter({
+					path     : "brandid", 
+					operator : sap.ui.model.FilterOperator.EQ, 
+					value1   : selectedBrandId
+				});
+				
+				var bindings = typeSelect.getBinding("items")
+				bindings.filter(filter, sap.ui.model.FilterType.Application);
+				
 			});
 				
 			oGridForm.addContent(brandLabel);
@@ -262,7 +280,6 @@ sap.ui.define([
 					var itemPrice = sap.ui.getCore().byId("IdInputItemPrice").getValue();
 					var itemPriceKg = sap.ui.getCore().byId("IdInputItemPriceKg").getValue();
 					
-					//res.json({listdata : {itembrand : rows[0], itemtype : rows[1], shops : rows[2] , shoplocation : rows[3]}});
 					/*
 					var shoppingListItem = {shoppinglistitems: [{
 													brandid: itemBrand,
@@ -284,99 +301,118 @@ sap.ui.define([
 								pricekg: itemPriceKg
 										
 					};
-											
-					//oNewlistModel.setData({ oData: shoppingListItem, bMerge: true });
-					//oNewlistModel.setData(shoppingListItem, true);
 					
-					
+					if (shoppingListItem.price === '')
+						shoppingListItem.price = "0";
+						
+					if (shoppingListItem.pricekg === '')
+						shoppingListItem.pricekg = "0";
+
 					var data = oNewlistModel.getData();
 					data.shoppinglistitems.push(shoppingListItem);
-					//data = data.concat( shoppingListItem );
-					//data = data.push( anotherElementToBeAdded );
 					oNewlistModel.setData(data);
 					
-					
 					dialog.close();
-					/*
-					model.create("/MyTestSet", contactEntry, {success: function (data) {
-							jQuery.sap.require("sap.m.MessageBox");
-							sap.m.MessageBox.show("Successfully added", {
-								icon : sap.m.MessageBox.Icon.SUCCESS, 
-								title : "Odata success",
-								actions : sap.m.MessageBox.Action.OK,
-								onClose : function() {
-									    var diag = sap.ui.getCore().byId("add_dialog");
-									    diag.close();
-								    }
-								}   
-							);
-						}, 
-						error: function (err) {
-							jQuery.sap.require("sap.m.MessageBox");
-							sap.m.MessageBox.show(err.message + "\n" + err.statusCode + " " + err.statusText, {
-								icon : sap.m.MessageBox.Icon.ERROR, 
-								title : "Odata error",
-								actions : sap.m.MessageBox.Action.OK,
-								onClose : function() {
-									    var diag = sap.ui.getCore().byId("add_dialog");
-									    diag.close();
-								    }
-								}   
-							);
-						} 
-					});
-					*/
+
+				}
+			}));
+			
+			dialog.addButton(new sap.m.Button({text: "Cancel", type: sap.m.ButtonType.Reject, press: function(){
+					dialog.close();
 				}
 			}));
 			
 			dialog.open();
 			
-			
+		},
+		
+		onSaveButtonPress : function (OEvent) {
 
-			/*
-			var contactEntry = {shoppinglist: {
-										listdate: '2015-10-18',
-										listuser: 'Jan-Ingar',
-										shopid: "1"
-									}
-								};
-								*/
-								
-			var contactEntry = {
-				listdate: '2015-10-18',
+			var oNewlistModel = sap.ui.getCore().getModel("IdNewlistModel");
+			var data = oNewlistModel.getData();
+			
+			var selectShop = sap.ui.getCore().byId("IdSelectShop");
+			var selectShopLocation = sap.ui.getCore().byId("IdSelectShopLocation");
+			
+			var listDatePicker = sap.ui.getCore().byId("IdListDatePicker");
+			var listDate = listDatePicker.getValue();	
+					
+			var now     = new Date(); 
+			var year    = now.getFullYear();
+			var month   = now.getMonth()+1; 
+			var day     = now.getDate();
+			var hour    = now.getHours();
+			var minute  = now.getMinutes();
+			var second  = now.getSeconds(); 
+			if(month.toString().length == 1) {
+				var month = '0'+month;
+			}
+			if(day.toString().length == 1) {
+				var day = '0'+day;
+			}   
+			if(hour.toString().length == 1) {
+				var hour = '0'+hour;
+			}
+			if(minute.toString().length == 1) {
+				var minute = '0'+minute;
+			}
+			if(second.toString().length == 1) {
+				var second = '0'+second;
+			}   
+			
+			var date = year + "-" + month + "-" + day;
+			var time = hour + ":" + minute + ":" + second;
+			
+			
+			var shoppingList = {
+				listdate: listDate,
 				listuser: 'Jan-Ingar',
-				shopid: "1"			
+				shopid: selectShop.getSelectedKey(),
+				shoplocationid: selectShopLocation.getSelectedKey(),
+				created: date,
+				createdtime: time
 			};
 			
+			oNewlistModel.loadDataNew("../fodder/shoppinglist", listhandleSuccess, listhandleError, shoppingList, true, 'POST', true);
 			
-			/*
-			oNewlistModel.loadData({
-				sURL: "http://192.168.0.102/fodder/shoppinglist",
-				oParameters: contactEntry,
-				sType: "POST",
-				bMerge: true
-			});*/
+			function listhandleSuccess(result){
 			
-			/*
-			oNewlistModel.loadDataNew({
-				sURL: "http://192.168.0.102/fodder/shoppinglist",
-				oParameters: contactEntry,
-				sType: "POST",
-				bMerge: true			
-			});*/
-			
-			
-			
-			
-			/*
-			oNewlistModel.loadDataNew("http://192.168.0.102/fodder/shoppinglist", handleSuccess, handleError, contactEntry, true, 'POST');
-			
-			function handleSuccess(oData){}
-			function handleError(){
-				//sap.ui.commons.MessageBox.alert(arguments[0].statusText);
+				data.shoppinglistitems.forEach( function (arrayItem){
+					
+					var shoppingListItem = {
+						shoppinglistid: result.insertId,
+						brandid: arrayItem.brandid,
+						itemtypeid: arrayItem.itemtypeid,
+						price: arrayItem.price,
+						pricekg: arrayItem.pricekg						
+					};
+					
+					oNewlistModel.loadDataNew("../fodder/shoppinglistitems", handleItemSuccess, handleItemError, shoppingListItem, true, 'POST', true);
+				});
+				
+				function handleItemSuccess(result){
+					//sap.ui.commons.MessageBox.alert(arguments[0].statusText);
+				}
+				
+				function handleItemError(){
+					//sap.ui.commons.MessageBox.alert(arguments[0].statusText);
+				}
+				
+				delete data.shoppinglistitems;
+				oNewlistModel.setData(data);
+				
+				selectShop.setSelectedKey('0');
+				selectShopLocation.setSelectedKey('0');
+				
 			}
-			*/
 			
+			function listhandleError(){
+				sap.ui.commons.MessageBox.alert(arguments[0].statusText);
+			}
+			
+			
+			//delete data.shoppinglistitems;
+			//oNewlistModel.setData(data);
 		}
 		
     });

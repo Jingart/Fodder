@@ -10,7 +10,7 @@ sap.ui.jsview("app.jsview1", {
 	var page = new sap.m.Page("IdMainPage", {
 		title : "Fodder main"
 	});
-	 
+	
 	var bar = new sap.m.Bar({
 		contentLeft: [ new sap.m.Button('ButtonAddRow', {icon : "sap-icon://cart-full", 
 														 //width : "200%",

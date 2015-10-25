@@ -13,6 +13,12 @@ sap.ui.jsview("app.newlist", {
 		navButtonPress : [oController.onBackButtonPress, oController]
 	});
 	
+	page.addHeaderContent(new sap.m.Button({
+		tooltip: "asdf",
+		icon:"sap-icon://accept",
+		press:[oController.onSaveButtonPress, oController]
+	}));
+	
 	
 	/*var button = new sap.m.Button({  
                               text: "Disable input",  
@@ -35,7 +41,17 @@ sap.ui.jsview("app.newlist", {
 	simpleForm.addContent(selectShop);		
 	
 	var selectShopLocation = new sap.m.Select({id: "IdSelectShopLocation"});  
-	simpleForm.addContent(selectShopLocation);		
+	simpleForm.addContent(selectShopLocation);	
+
+	var listDatePicker = new sap.m.DatePicker("IdListDatePicker", {
+		//tooltip: 'Shoppinglist date',
+		//width: '200px',
+		//type: sap.m.InputType.Date,
+		//required: true
+		valueFormat: "yyyy-MM-dd"
+	});
+	
+	simpleForm.addContent(listDatePicker);	
 
 	
 	
